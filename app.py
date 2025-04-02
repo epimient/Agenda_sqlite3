@@ -2,7 +2,7 @@ import tkinter as tk
 import sqlite3
 
 class App:
-    def __init__(self, ventana_principal):
+    def __init__(self, ventana_principal):        
         self.ventana_principal = ventana_principal
         self.ventana_principal.title("Agenda")
     
@@ -36,6 +36,9 @@ class App:
         
         self.boton_actualizar = tk.Button(self.ventana_principal, text = 'actualizar', command = self.actualizar_datos)
         self.boton_actualizar.pack(pady = 20)
+
+        self.boton_eliminar = tk.Button(self.ventana_principal, text = 'eliminar', command = self.eliminar_datos)
+        self.boton_eliminar.pack(pady = 20)
     
     def guardar_datos(self):
         nombre = self.entry_nombre.get()
@@ -76,6 +79,21 @@ class App:
             self.entry_edad.delete(0,tk.END)
         else:
             print("No hay ningun resigistro seleccionado para actualizar")
+    
+    def eliminar_datos(self):
+        seleccion = self.listbox.curselection()
+        
+        if seleccion:
+            index = seleccion[0]
+            registro = self.listbox.get(index)
+            registro_id = registro.split(',')[0].split(':')[1]
+            
+            self.cur.execute('DELETE FROM usuarios WHERE id = ?',(registro_id,))
+            self.con.commit()
+            
+            self.mostrar_datos()
+        else:
+            print("No hay ningun resigistro seleccionado para eliminar")
 
 mi_ventana =tk.Tk()
 app = App(mi_ventana)
